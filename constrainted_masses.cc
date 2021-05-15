@@ -12,9 +12,9 @@ namespace irr {
 
 ConstraintedMasses::Mass::Mass(
 		irr::ISceneManager* smgr,
-		const irr::vector3df &init_pos, irr::IVideoDriver* driver,
+		const irrvec &init_pos, irr::IVideoDriver* driver,
 		float mass,
-		const irr::vector3df &init_v,
+		const irrvec &init_v,
 		float radius)
 {
 	m_pos = init_pos;
@@ -36,7 +36,7 @@ ConstraintedMasses::Mass::Mass(
 void ConstraintedMasses::Mass::update(float time_delta) {
 	m_v += m_total_force * time_delta / m_mass;
 	m_pos += m_v * time_delta;
-	m_total_force = irr::vector3df(0, 0, 0);
+	m_total_force = irrvec(0, 0, 0);
 }
 
 void ConstraintedMasses::Mass::update_ui() {
@@ -56,7 +56,7 @@ void ConstraintedMasses::add_constraint(int i, int j) {
 			(m_masses[i]->m_pos - m_masses[j]->m_pos).getLength());
 }
 
-irr::vector3df ConstraintedMasses::_t(int i, int j) {
+irrvec ConstraintedMasses::_t(int i, int j) {
 	return (m_masses[j]->m_pos - m_masses[i]->m_pos).normalize();
 }
 
@@ -145,10 +145,10 @@ void ConstraintedMasses::update(float time_delta) {
 	for (int i=0; i < num_constraints; i++) {
 		int mass_0 = std::get<0>(m_constraints[i]);
 		int mass_1 = std::get<1>(m_constraints[i]);
-		irr::vector3df relative_v = m_masses[mass_1]->m_v - m_masses[mass_0]->m_v;
-		irr::vector3df relative_v_norm = relative_v;
+		irrvec relative_v = m_masses[mass_1]->m_v - m_masses[mass_0]->m_v;
+		irrvec relative_v_norm = relative_v;
 		relative_v_norm.normalize();
-		irr::vector3df tangential_relative_v = relative_v -
+		irrvec tangential_relative_v = relative_v -
 			relative_v_norm.dotProduct(_t(mass_1, mass_0)) * relative_v;
 		float tangential_relative_v_magnitude = tangential_relative_v.getLength();
 		float actual_constraint_length = (m_masses[mass_1]->m_pos
@@ -172,7 +172,7 @@ void ConstraintedMasses::update(float time_delta) {
 		int mass_0 = std::get<0>(m_constraints[i]);
 		int mass_1 = std::get<1>(m_constraints[i]);
 
-		irr::vector3df relative_v = m_masses[mass_1]->m_v - m_masses[mass_0]->m_v;
+		irrvec relative_v = m_masses[mass_1]->m_v - m_masses[mass_0]->m_v;
 		float radial_relative_v = relative_v.dotProduct(_t(mass_1, mass_0));
 
 		m_masses[mass_0]->m_v += radial_relative_v * _t(mass_1, mass_0) / 2;
@@ -187,7 +187,7 @@ void ConstraintedMasses::update(float time_delta) {
 	for (int i=0; i < num_constraints; i++) {
 		int mass_0 = std::get<0>(m_constraints[i]);
 		int mass_1 = std::get<1>(m_constraints[i]);
-		irr::vector3df diff = m_masses[mass_1]->m_pos - m_masses[mass_0]->m_pos;
+		irrvec diff = m_masses[mass_1]->m_pos - m_masses[mass_0]->m_pos;
 		m_masses[mass_1]->m_pos = m_masses[mass_0]->m_pos
 			+ diff.normalize() * m_constraint_lengths[i];
 	}

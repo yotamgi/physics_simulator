@@ -1,4 +1,5 @@
 #include "constrainted_masses.h"
+#include "common.h"
 
 #include <irrlicht.h>
 #include <IGeometryCreator.h>
@@ -11,12 +12,6 @@ using namespace scene;
 using namespace video;
 using namespace io;
 using namespace gui;
-
-std::ostream& operator<<(std::ostream& os, const vector3df& vec)
-{
-	os << "(" << vec.X << ", " << vec.Y << ", " << vec.Z << ")";
-	return os;
-}
 
 int main()
 {
