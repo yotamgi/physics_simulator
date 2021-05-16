@@ -45,7 +45,7 @@ int main()
 	smgr->addLightSceneNode(NULL, vector3df(0, 60, -60),
 				video::SColor(255, 150, 255, 255), 50.);
 	smgr->setAmbientLight(video::SColor(255, 10, 10, 10));
-	node->setPosition(vector3df(30, 0, 0));
+	node->setPosition(vector3df(20, 0, 0));
 	smgr->addCameraSceneNode(0, vector3df(0,0,-30),
 			vector3df(0,0,1));
 
@@ -59,11 +59,11 @@ int main()
 	ConstraintedMasses::Mass m2(smgr, vector3df( 3, 15, 0),
 			driver, 0.5,
 			vector3df(0,  0, 0), 0.5);
-	ConstraintedMasses::Mass m3(smgr, vector3df( 6, 15, 0),
+	ConstraintedMasses::Mass m3(smgr, vector3df( 3, 15, 3),
 			driver, 0.5,
 			vector3df(0,  0, 0), 0.5);
 	std::vector<ConstraintedMasses::Mass*> masses{&m0, &m1, &m2, &m3};
-	ConstraintedMasses cm(masses);
+	ConstraintedMasses cm(masses, smgr);
 	cm.add_constraint(0, 1);
 	cm.add_constraint(1, 2);
 	cm.add_constraint(2, 3);

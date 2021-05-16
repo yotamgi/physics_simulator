@@ -1,5 +1,6 @@
 #include "constrainted_masses.h"
 #include <armadillo>
+#include <cmath>
 
 namespace irr {
 	using namespace core;
@@ -43,8 +44,11 @@ void ConstraintedMasses::Mass::update_ui() {
 	m_scene_node->setPosition(m_pos);
 }
 
-ConstraintedMasses::ConstraintedMasses(std::vector<Mass*> masses):
-	m_masses(masses) {}
+ConstraintedMasses::ConstraintedMasses(std::vector<Mass*> masses,
+		irr::scene::ISceneManager* smgr):
+	m_masses(masses),
+	m_smgr(smgr)
+{}
 
 void ConstraintedMasses::add_constraint(int i, int j) {
 	if (i < j) {
@@ -52,8 +56,23 @@ void ConstraintedMasses::add_constraint(int i, int j) {
 	} else {
 		m_constraints.push_back({j, i});
 	}
-	m_constraint_lengths.push_back(
-			(m_masses[i]->m_pos - m_masses[j]->m_pos).getLength());
+	float constraint_length = (m_masses[i]->m_pos - m_masses[j]->m_pos).getLength();
+	m_constraint_lengths.push_back(constraint_length);
+
+	// Add the cylinder shape on the constraint.
+	irr::IMesh* mesh = m_smgr->getGeometryCreator()->createArrowMesh(
+			10, 20,
+			/* height */ constraint_length,
+			/* head height */ constraint_length,
+			/* width */ 0.3,
+			/* head width */ 0.3,
+			0xffff0000, 0xffff0000);
+	auto scene_node = m_smgr->addMeshSceneNode(mesh);
+	scene_node->getMesh()->getMeshBuffer(0)->getMaterial().MaterialType = irr::EMT_SOLID;
+	scene_node->getMesh()->getMeshBuffer(0)->getMaterial().Shininess = 10;
+	scene_node->setMaterialFlag(irr::EMF_LIGHTING, true);
+	scene_node->setVisible(true);
+	m_constraint_mesh.push_back(scene_node);
 }
 
 irrvec ConstraintedMasses::_t(int i, int j) {
@@ -202,6 +221,28 @@ void ConstraintedMasses::update(float time_delta) {
 void ConstraintedMasses::update_ui() {
 	for (auto mass : m_masses) {
 		mass->update_ui();
+	}
+
+	// Update the constraint's cylinder transformation.
+	for (unsigned int i=0; i<m_constraints.size(); i++) {
+		int mass_0 = std::get<0>(m_constraints[i]);
+		int mass_1 = std::get<1>(m_constraints[i]);
+		irrvec position = m_masses[mass_0]->m_pos;
+		irrvec diff = m_masses[mass_1]->m_pos - m_masses[mass_0]->m_pos;
+		diff.normalize();
+
+		// Calculate the rotation via quaternions.
+		float rot_angle = std::acos(diff.Y);
+		irrvec rot_axis = irrvec(0, 1, 0).crossProduct(diff).normalize();
+		irr::quaternion q;
+		q.fromAngleAxis(rot_angle, rot_axis);
+		irrvec rotation;
+		q.toEuler(rotation);
+		rotation *= irr::RADTODEG;
+
+		// Update position and rotation of the scene node.
+		m_constraint_mesh[i]->setPosition(position);
+		m_constraint_mesh[i]->setRotation(rotation);
 	}
 }
 

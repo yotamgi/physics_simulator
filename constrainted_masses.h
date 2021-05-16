@@ -27,7 +27,8 @@ public:
 		float m_mass;
 		friend class ConstraintedMasses;
 	};
-	ConstraintedMasses(std::vector<Mass*> masses);
+	ConstraintedMasses(std::vector<Mass*> masses,
+			irr::scene::ISceneManager* smgr);
 	void update(float time_delta);
 	void update_ui();
 	void add_constraint(int i, int j);
@@ -36,7 +37,9 @@ private:
 	irrvec _t(int i, int j);
 
 	std::vector<Mass*> m_masses;
+	irr::scene::ISceneManager* m_smgr;
 	std::vector<std::pair<int, int> > m_constraints;
 	std::vector<float> m_constraint_lengths;
+	std::vector<irr::scene::IMeshSceneNode *> m_constraint_mesh;
 };
 
