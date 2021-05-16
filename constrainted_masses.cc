@@ -156,11 +156,11 @@ void ConstraintedMasses::apply_tension_forces(float time_delta) {
 void ConstraintedMasses::update(float time_delta) {
 	int num_constraints = m_constraints.size();
 
-	// Apply the tension forces according to the external mass forces.
-	apply_tension_forces(time_delta);
-
 	// Apply Centrifugal forces, according to the masses tengencial
 	// velocity.
+	// Note: the centrifugal forces must be calculated *after* the masses
+	// are updated, in order to prevent the system from accelerating itself
+	// on high velocities.
 	for (int i=0; i < num_constraints; i++) {
 		int mass_0 = std::get<0>(m_constraints[i]);
 		int mass_1 = std::get<1>(m_constraints[i]);
@@ -181,10 +181,8 @@ void ConstraintedMasses::update(float time_delta) {
 				* radial_acc * _t(mass_1, mass_0));
 	}
 
-	// Add some friction
-	for (auto mass : m_masses) {
-		mass->apply_force(-mass->m_v * 0.4);
-	}
+	// Apply the tension forces according to the external mass forces.
+	apply_tension_forces(time_delta);
 
 	// Fix velocities to not be in the direction of the constraints.
 	for (int i=0; i < num_constraints; i++) {
@@ -201,7 +199,6 @@ void ConstraintedMasses::update(float time_delta) {
 		radial_relative_v = relative_v.dotProduct(_t(mass_1, mass_0));
 	}
 
-
 	// Fix positions for constraints.
 	for (int i=0; i < num_constraints; i++) {
 		int mass_0 = std::get<0>(m_constraints[i]);
@@ -211,11 +208,15 @@ void ConstraintedMasses::update(float time_delta) {
 			+ diff.normalize() * m_constraint_lengths[i];
 	}
 
+	// Add some friction
+	for (auto mass : m_masses) {
+		mass->apply_force(-mass->m_v * 0.05);
+	}
+
 	// Update all the masses.
 	for (auto mass : m_masses) {
 		mass->update(time_delta);
 	}
-
 }
 
 void ConstraintedMasses::update_ui() {

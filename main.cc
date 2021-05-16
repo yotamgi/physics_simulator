@@ -46,7 +46,7 @@ int main()
 				video::SColor(255, 150, 255, 255), 50.);
 	smgr->setAmbientLight(video::SColor(255, 10, 10, 10));
 	node->setPosition(vector3df(20, 0, 0));
-	smgr->addCameraSceneNode(0, vector3df(0,0,-30),
+	smgr->addCameraSceneNode(0, vector3df(0,0,-20),
 			vector3df(0,0,1));
 
 	// Build the Constrainted Masses object.
@@ -82,12 +82,12 @@ int main()
 		}
 
 		// Update stuff.
-		m0.apply_force(vector3df(0, -10, 0));
-		m1.apply_force(vector3df(0, -10, 0));
-		m2.apply_force(vector3df(0, -10, 0));
-		m3.apply_force(vector3df(0, -10, 0));
+		m0.apply_force(vector3df(0, -20, 0));
+		m1.apply_force(vector3df(0, -20, 0));
+		m2.apply_force(vector3df(0, -20, 0));
+		m3.apply_force(vector3df(0, -20, 0));
 		if (m3.get_pos().Y < 0 ) {
-			m3.apply_force(vector3df(0, -m3.get_pos().Y, 0) * 20);
+			m3.apply_force(vector3df(0, -m3.get_pos().Y, 0) * 30);
 		}
 		cm.update(frame_time_delta);
 		cm.update_ui();
