@@ -1,12 +1,9 @@
-CXXFLAGS=-g -I/usr/include/irrlicht/ -Wall
+CXXFLAGS=-g -I/usr/include/irrlicht/ -Wall -I.
 LDFLAGS=-lIrrlicht -llapack -larmadillo
 
-OBJECTS=main.o constrainted_masses.o renderer.o
+OBJECTS=constrainted_masses.o renderer.o
 
-all: sim
-
-main.o: main.cc
-	g++  -c ${CXXFLAGS} ./main.cc -o main.o
+all: four_masses
 
 constrainted_masses.o: constrainted_masses.cc
 	g++  -c ${CXXFLAGS} ./constrainted_masses.cc -o constrainted_masses.o
@@ -14,8 +11,11 @@ constrainted_masses.o: constrainted_masses.cc
 renderer.o: renderer.cc
 	g++  -c ${CXXFLAGS} ./renderer.cc -o renderer.o
 
-sim: ${OBJECTS}
-	g++ ${OBJECTS} -o sim ${LDFLAGS}
+scenes/four_masses.o: scenes/four_masses.cc
+	g++  -c ${CXXFLAGS} ./scenes/four_masses.cc -o scenes/four_masses.o
+
+four_masses: ${OBJECTS} scenes/four_masses.o
+	g++ ${OBJECTS} scenes/four_masses.o -o four_masses ${LDFLAGS}
 
 clean:
-	rm sim ${OBJECTS}
+	rm -f four_masses ${OBJECTS} scenes/four_masses.o

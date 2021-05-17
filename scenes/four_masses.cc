@@ -19,27 +19,6 @@ const int MAX_FRAME_RATE = 70;
 int main()
 {
 	SimulatorRenderer::init();
-	auto smgr = SimulatorRenderer::get_smgr();
-
-	auto gcreator = smgr->getGeometryCreator();
-	irr::IMesh* mesh = gcreator->createArrowMesh(
-			10, 20,
-			/* height */   30., 
-			/* head height */ 15., 
-			/* width */ 1.5, 
-			/* head width */ 4.,
-			0xFF0000FF, 0xFFFF00FF);
-	if (!mesh)
-	{
-		SimulatorRenderer::die();
-		return 1;
-	}
-	irr::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh);
-	if (node)
-	{
-		node->setMaterialFlag(irr::EMF_LIGHTING, false);
-	}
-	node->setPosition(irrvec(20, 0, 0));
 
 	// Build the Constrainted Masses object.
 	ConstraintedMasses::Mass m0(irrvec(-3, 15, 0),
