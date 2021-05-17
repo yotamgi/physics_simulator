@@ -1,29 +1,19 @@
 #include "constrainted_masses.h"
+#include "renderer.h"
 #include <armadillo>
 #include <cmath>
 
-namespace irr {
-	using namespace core;
-	using namespace video;
-	using namespace scene;
-	using namespace io;
-	using namespace gui;
-}
-
-
 ConstraintedMasses::Mass::Mass(
-		irr::ISceneManager* smgr,
-		const irrvec &init_pos, irr::IVideoDriver* driver,
+		const irrvec &init_pos,
 		float mass,
 		const irrvec &init_v,
 		float radius)
 {
 	m_pos = init_pos;
 	m_v = init_v;
-	m_driver = driver;
 	m_mass = mass;
 
-	m_scene_node = smgr->addSphereSceneNode(radius);
+	m_scene_node = SimulatorRenderer::get_smgr()->addSphereSceneNode(radius);
 	if (!m_scene_node) {
 		throw std::runtime_error("Couldn't create scene node.");
 	}
@@ -44,10 +34,8 @@ void ConstraintedMasses::Mass::update_ui() {
 	m_scene_node->setPosition(m_pos);
 }
 
-ConstraintedMasses::ConstraintedMasses(std::vector<Mass*> masses,
-		irr::scene::ISceneManager* smgr):
-	m_masses(masses),
-	m_smgr(smgr)
+ConstraintedMasses::ConstraintedMasses(std::vector<Mass*> masses):
+	m_masses(masses)
 {}
 
 void ConstraintedMasses::add_constraint(int i, int j) {
@@ -60,14 +48,15 @@ void ConstraintedMasses::add_constraint(int i, int j) {
 	m_constraint_lengths.push_back(constraint_length);
 
 	// Add the cylinder shape on the constraint.
-	irr::IMesh* mesh = m_smgr->getGeometryCreator()->createArrowMesh(
+	auto smgr = SimulatorRenderer::get_smgr();
+	irr::IMesh* mesh = smgr->getGeometryCreator()->createArrowMesh(
 			10, 20,
 			/* height */ constraint_length,
 			/* head height */ constraint_length,
 			/* width */ 0.3,
 			/* head width */ 0.3,
 			0xffff0000, 0xffff0000);
-	auto scene_node = m_smgr->addMeshSceneNode(mesh);
+	auto scene_node = smgr->addMeshSceneNode(mesh);
 	scene_node->getMesh()->getMeshBuffer(0)->getMaterial().MaterialType = irr::EMT_SOLID;
 	scene_node->getMesh()->getMeshBuffer(0)->getMaterial().Shininess = 10;
 	scene_node->setMaterialFlag(irr::EMF_LIGHTING, true);

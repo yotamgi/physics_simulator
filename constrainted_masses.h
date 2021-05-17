@@ -7,9 +7,7 @@ class ConstraintedMasses {
 public:
 	class Mass {
 	public:
-		Mass(irr::scene::ISceneManager* smgr,
-				const irrvec &init_pos,
-				irr::video::IVideoDriver *driver,
+		Mass(const irrvec &init_pos,
 				float mass,
 				const irrvec &init_v,
 				float radius);
@@ -23,12 +21,10 @@ public:
 		irrvec m_pos;
 		irrvec m_v;
 		irr::scene::IMeshSceneNode* m_scene_node;
-		irr::video::IVideoDriver* m_driver;
 		float m_mass;
 		friend class ConstraintedMasses;
 	};
-	ConstraintedMasses(std::vector<Mass*> masses,
-			irr::scene::ISceneManager* smgr);
+	ConstraintedMasses(std::vector<Mass*> masses);
 	void update(float time_delta);
 	void update_ui();
 	void add_constraint(int i, int j);
@@ -37,7 +33,6 @@ private:
 	irrvec _t(int i, int j);
 
 	std::vector<Mass*> m_masses;
-	irr::scene::ISceneManager* m_smgr;
 	std::vector<std::pair<int, int> > m_constraints;
 	std::vector<float> m_constraint_lengths;
 	std::vector<irr::scene::IMeshSceneNode *> m_constraint_mesh;
