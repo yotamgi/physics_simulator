@@ -9,10 +9,12 @@
 #include <unistd.h>
 #include <cstdint>
 
-const int MIN_FRAME_RATE = 20;
-const int MAX_FRAME_RATE = 200;
-const float MIN_TIME_DELTA = 1. / MAX_FRAME_RATE;
-const float MAX_TIME_DELTA = 1. / MIN_FRAME_RATE;
+const int MIN_UPDATE_RATE = 20;
+const int MAX_UPDATE_RATE = 200;
+const float MIN_TIME_DELTA = 1. / MAX_UPDATE_RATE;
+const float MAX_TIME_DELTA = 1. / MIN_UPDATE_RATE;
+
+const int MAX_FRAME_RATE = 50;
 
 int main()
 {
@@ -61,17 +63,19 @@ int main()
 	std::uint32_t then = SimulatorRenderer::get_time();
 
 	float time_since_last_frame = 0;
+	float time_delta = 0;
 	while(SimulatorRenderer::running())
 	{
+		if (time_delta < MIN_TIME_DELTA) {
+			usleep((MIN_TIME_DELTA - time_delta) * 1000000);
+		}
+
 		// Work out a frame delta time.
 		const std::uint32_t now = SimulatorRenderer::get_time();
-		float time_delta = (float)(now - then) / 1000.f; // Time in seconds
+		time_delta = (float)(now - then) / 1000.f; // Time in seconds
 		then = now;
 		if (time_delta > MAX_TIME_DELTA) {
 			time_delta = MAX_TIME_DELTA;
-		} else if (time_delta < MIN_TIME_DELTA) {
-			usleep((MIN_TIME_DELTA - time_delta) * 1000000);
-			time_delta = MIN_TIME_DELTA;
 		}
 
 		// Update stuff.
@@ -83,11 +87,11 @@ int main()
 			m3.apply_force(irrvec(0, -m3.get_pos().Y, 0) * 50);
 		}
 		cm.update(time_delta);
-		cm.update_ui();
 
 		// Draw at most 60 frames per sec.
 		time_since_last_frame += time_delta;
-		if (time_since_last_frame > 1./60) {
+		if (time_since_last_frame > 1./MAX_FRAME_RATE) {
+			cm.update_ui();
 			SimulatorRenderer::render_frame();
 			time_since_last_frame = 0;
 		}
