@@ -14,7 +14,7 @@ const int MAX_UPDATE_RATE = 200;
 const float MIN_TIME_DELTA = 1. / MAX_UPDATE_RATE;
 const float MAX_TIME_DELTA = 1. / MIN_UPDATE_RATE;
 
-const int MAX_FRAME_RATE = 50;
+const int MAX_FRAME_RATE = 70;
 
 int main()
 {
