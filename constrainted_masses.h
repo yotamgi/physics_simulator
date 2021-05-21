@@ -13,6 +13,7 @@ public:
 				float radius);
 		void apply_force(const irrvec &f) { m_total_force += f; }
 		irrvec get_pos() {return m_pos;}
+		irrvec get_v() {return m_v;}
 	private:
 		void update(float time_delta);
 		void update_ui();
