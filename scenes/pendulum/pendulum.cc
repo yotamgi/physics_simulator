@@ -1,4 +1,4 @@
-#include "scenes/pendulum.h"
+#include "scenes/pendulum/pendulum.h"
 #include "constrainted_masses.h"
 #include "common.h"
 #include "renderer.h"
