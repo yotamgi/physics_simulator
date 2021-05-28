@@ -24,6 +24,10 @@ ConstraintedMasses::Mass::Mass(
 	m_scene_node->setVisible(true);
 }
 
+ConstraintedMasses::Mass::~Mass() {
+	m_scene_node->remove();
+}
+
 void ConstraintedMasses::Mass::update(float time_delta) {
 	m_v += m_total_force * time_delta / m_mass;
 	m_pos += m_v * time_delta;
@@ -37,6 +41,12 @@ void ConstraintedMasses::Mass::update_ui() {
 ConstraintedMasses::ConstraintedMasses(std::vector<Mass*> masses):
 	m_masses(masses)
 {}
+
+ConstraintedMasses::~ConstraintedMasses() {
+	for (auto constraint_mesh : m_constraint_mesh) {
+		constraint_mesh->remove();
+	}
+}
 
 void ConstraintedMasses::add_constraint(int i, int j) {
 	if (i < j) {

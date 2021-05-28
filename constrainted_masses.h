@@ -11,6 +11,7 @@ public:
 				float mass,
 				const irrvec &init_v,
 				float radius);
+		~Mass();
 		void apply_force(const irrvec &f) { m_total_force += f; }
 		irrvec get_pos() {return m_pos;}
 		irrvec get_v() {return m_v;}
@@ -26,6 +27,7 @@ public:
 		friend class ConstraintedMasses;
 	};
 	ConstraintedMasses(std::vector<Mass*> masses);
+	~ConstraintedMasses();
 	void update(float time_delta);
 	void update_ui();
 	void add_constraint(int i, int j);

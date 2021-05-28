@@ -17,6 +17,7 @@ struct PendulumInfo {
 };
 
 void init(int num_nodes = 1);
+void reset(int num_nodes = 1);
 
 PendulumInfo step(float force_x, float force_y, float time_delta);
 

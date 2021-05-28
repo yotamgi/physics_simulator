@@ -21,6 +21,17 @@ PendulumNodeInfo::PendulumNodeInfo(float x, float y, float z,
 
 void init(int num_nodes) {
 	SimulatorRenderer::init();
+	reset(num_nodes);
+}
+
+void reset(int num_nodes) {
+
+	// Delete previous stuff.
+	if (cm) delete cm;
+	for (auto mass: masses) {
+		delete mass;
+	}
+	masses.clear();
 
 	// Build the Constrainted Masses object by adding pendulum nodes.
 	for (int i=0; i<num_nodes; i++) {
