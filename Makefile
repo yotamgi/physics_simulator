@@ -17,12 +17,15 @@ scenes/four_masses.o: scenes/four_masses.cc
 four_masses: ${OBJECTS} scenes/four_masses.o
 	g++ ${OBJECTS} scenes/four_masses.o -o four_masses ${LDFLAGS}
 
+mould_effect: ${OBJECTS} scenes/mould_effect.o
+	g++ ${OBJECTS} scenes/mould_effect.o -o mould_effect ${LDFLAGS}
+
 scenes/pendulum/pendulum.o: scenes/pendulum/pendulum.cc
 	g++  -c ${CXXFLAGS} ./scenes/pendulum/pendulum.cc -o scenes/pendulum/pendulum.o
 
 scenes/pendulum/_pendulum.so: ${OBJECTS} scenes/pendulum/pendulum.o ./scenes/pendulum/pendulum.i
 	swig -c++ -python ./scenes/pendulum/pendulum.i
-	g++ -c ${CXXFLAGS} ./scenes/pendulum/pendulum_wrap.cxx -o ./scenes/pendulum/pendulum_wrap.o -I /usr/include/python3.9/
+	g++ -c ${CXXFLAGS} ./scenes/pendulum/pendulum_wrap.cxx -o ./scenes/pendulum/pendulum_wrap.o -I /usr/include/python3.10/
 	g++ ${OBJECTS} scenes/pendulum/pendulum.o scenes/pendulum/pendulum_wrap.o -o scenes/pendulum/_pendulum.so ${LDFLAGS} -fPIC -shared
 
 clean:

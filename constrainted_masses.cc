@@ -208,9 +208,9 @@ void ConstraintedMasses::update(float time_delta) {
 	}
 
 	// Add some friction
-	for (auto mass : m_masses) {
-		mass->apply_force(-mass->m_v * 0.05);
-	}
+	//for (auto mass : m_masses) {
+	//	mass->apply_force(-mass->m_v * 0.05);
+	//}
 
 	// Update all the masses.
 	for (auto mass : m_masses) {
@@ -233,7 +233,7 @@ void ConstraintedMasses::update_ui() {
 
 		// Calculate the rotation via quaternions.
 		float rot_angle = std::acos(diff.Y);
-		irrvec rot_axis = irrvec(0, 1, 0).crossProduct(diff).normalize();
+		irrvec rot_axis = irrvec(0.00001, 1.000001, 0.00001).crossProduct(diff).normalize();
 		irr::quaternion q;
 		q.fromAngleAxis(rot_angle, rot_axis);
 		irrvec rotation;
