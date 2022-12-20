@@ -3,7 +3,7 @@ LDFLAGS=-lIrrlicht -llapack -larmadillo
 
 OBJECTS=constrainted_masses.o renderer.o
 
-all: four_masses scenes/pendulum/_pendulum.so
+all: four_masses scenes/pendulum/_pendulum.so mould_effect
 
 constrainted_masses.o: constrainted_masses.cc
 	g++  -c ${CXXFLAGS} ./constrainted_masses.cc -o constrainted_masses.o
